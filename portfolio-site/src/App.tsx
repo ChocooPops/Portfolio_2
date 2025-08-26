@@ -4,7 +4,12 @@
 // To export as a static site, mount this component at "/" in your router or render it in index.tsx.
 
 import { useMemo, useState, useEffect } from "react";
-import { Github, Mail, Phone, MapPin, Link as LinkIcon, ChevronLeft, ChevronRight, Download, GraduationCap, BriefcaseBusiness, Layers, Code, Cpu, Database, Settings } from "lucide-react";
+import {
+  Github, Mail, Phone, MapPin, Link as LinkIcon, ChevronLeft, ChevronRight,
+  Download, GraduationCap, BriefcaseBusiness, Layers, Code, Cpu, Database, Settings,
+  // 👇 ajoute bien ces trois-là
+  User, Film, Gamepad2,
+} from "lucide-react";
 
 export default function PortfolioSite() {
   // === DATA (reprend tes infos) ================================================================
@@ -19,6 +24,21 @@ export default function PortfolioSite() {
       github: "https://github.com/ChocooPops?tab=repositories",
       site: "https://www.nahil-rahmani.fr",
       cvUrl: "/CV_RAHMANI_NAHIL.pdf" // Place le PDF à la racine publique
+    },
+    profil: {
+      photo: "profile.jpg", // optionnel: place /public/assets/profile.jpg
+      presentation: `Étudiant en BUT Informatique (IUT Lyon 1), je suis passionné par la création d’applications utiles et soignées.
+  J’aime concevoir des interfaces propres, structurer le back proprement (SOLID, patterns) et livrer des projets
+  robustes. Je suis curieux, persévérant et j’adore apprendre en construisant.`,
+      etudes: [
+        { titre: "BUT Informatique", ecole: "IUT Lyon 1 — Villeurbanne", annee: "2022 → 2025", details: "Parcours développement, qualité et déploiement." },
+        { titre: "Baccalauréat général (Mention Bien)", ecole: "Lycée La Martinière Monplaisir — Lyon", annee: "2019 → 2022", details: "Spécialités scientifiques et projets perso." },
+      ],
+      passions: [
+        { id: "code", icon: "Code", titre: "Programmation", desc: "Projets web & logiciels, qualité de code, petites libs utiles." },
+        { id: "cinema", icon: "Film", titre: "Cinéma", desc: "Analyse d’image, narration, inspirations pour l’UX et le motion." },
+        { id: "jeu", icon: "Gamepad2", titre: "Jeu vidéo", desc: "Game design, pixel-art, prototypes (runner, A-RPG…)." },
+      ]
     },
     accueil: {
       imageCarrousel: [
@@ -201,7 +221,7 @@ export default function PortfolioSite() {
 
   useEffect(() => {
     const onScroll = () => {
-      const ids = ["accueil", "projets", "technos", "competences", "experiences", "formation", "contact"];
+      const ids = ["accueil", "profil", "projets", "technos", "competences", "experiences", "formation", "contact"];
       let current = ids[0];
       for (const id of ids) {
         const el = document.getElementById(id);
@@ -304,6 +324,7 @@ export default function PortfolioSite() {
             <div className="hidden md:flex items-center gap-1 text-sm">
               {[
                 { id: "projets", label: "Projets" },
+                { id: "profil", label: "Profil" },
                 { id: "technos", label: "Technologies" },
                 { id: "competences", label: "Compétences" },
                 { id: "experiences", label: "Expériences" },
@@ -355,6 +376,71 @@ export default function PortfolioSite() {
                   <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Glisse pour parcourir quelques visuels (place tes fichiers dans <code>/assets</code>).</p>
                 </Card>
               </div>
+            </div>
+          </Section>
+        </Anchor>
+
+        <Anchor id="profil">
+          <Section className="py-14">
+            <div className="flex items-center gap-3 mb-6">
+              <User className="w-5 h-5" />
+              <h2 className="text-2xl font-bold">Profil</h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Carte Présentation */}
+              <Card>
+                <h3 className="font-semibold mb-2">Qui suis-je ?</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  {data.profil.presentation}
+                </p>
+                {data.profil.photo && (
+                  <div className="mt-4">
+                    <img
+                      src={`assets/${data.profil.photo}`}
+                      alt="Photo de profil"
+                      className="w-full aspect-video object-cover rounded-xl border border-slate-200/20 dark:border-slate-800/60"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+              </Card>
+
+              {/* Carte Études */}
+              <Card>
+                <h3 className="font-semibold mb-2">Études</h3>
+                <ul className="space-y-3">
+                  {data.profil.etudes.map((e: any, i: number) => (
+                    <li key={i} className="text-sm">
+                      <div className="font-medium">{e.titre}</div>
+                      <div className="text-slate-600 dark:text-slate-300">{e.ecole}</div>
+                      <div className="text-xs text-slate-500">{e.annee}</div>
+                      {e.details && <div className="text-xs text-slate-600 dark:text-slate-300 mt-1">{e.details}</div>}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+
+              {/* Carte Passions */}
+              <Card>
+                <h3 className="font-semibold mb-2">Passions</h3>
+                <ul className="space-y-3">
+                  {data.profil.passions.map((p: any) => (
+                    <li key={p.id} className="flex items-start gap-3">
+                      {/* Icône dynamique */}
+                      <div className="mt-0.5">
+                        {p.icon === "Code" && <Code className="w-4 h-4" />}
+                        {p.icon === "Film" && <Film className="w-4 h-4" />}
+                        {p.icon === "Gamepad2" && <Gamepad2 className="w-4 h-4" />}
+                      </div>
+                      <div className="text-sm">
+                        <div className="font-medium">{p.titre}</div>
+                        <div className="text-slate-600 dark:text-slate-300">{p.desc}</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
             </div>
           </Section>
         </Anchor>
